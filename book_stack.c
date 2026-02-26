@@ -8,6 +8,8 @@
  */
 #include <stdio.h>
 #include "book_stack.h"
+#include <stdlib.h>
+#include <string.h>
 
 // === BOOK STACK OPERATIONS: IMPLEMENT THESE ===============================
 
@@ -16,7 +18,9 @@
  * Returns a pointer to a new stack structure.
  */
 book_stack_t* create_stack() {
-    // TODO: Implement stack initialization
+    book_stack_t* newstack;
+    newstack->size = 0;
+    newstack->top = NULL;
 }
  
 /**
@@ -24,7 +28,17 @@ book_stack_t* create_stack() {
  * Copies title/author strings using dynamic memory allocation.
  */
 void push(book_stack_t* stack, const char* title, const char* author, int year, int pages) {
-    // TODO: Implement push operation
+    stack_node_t* newnode = (stack_node_t*)malloc(sizeof(stack_node_t));
+    newnode->book.author = (char*)malloc(strlen(author)+1);
+    newnode->book.title = (char*)malloc(strlen(title)+1);
+    newnode->book.pages = pages;
+    newnode->book.year = year;
+    strcpy(newnode->book.title, title);
+    strcpy(newnode->book.author, author);
+
+    newnode->next = stack->top;
+    stack->top = newnode;
+    stack->size++;
 }
 
 /**
@@ -32,7 +46,7 @@ void push(book_stack_t* stack, const char* title, const char* author, int year, 
  * Returns pointer to the top book, or NULL if empty.
  */
 book_t* peek(book_stack_t* stack) {
-    // TODO: Implement peek operation
+    return &stack->top->book;
 }
 
 /**
@@ -41,7 +55,14 @@ book_t* peek(book_stack_t* stack) {
  * Returns 1 if successful, 0 if the stack was empty.
  */
 int pop(book_stack_t* stack, book_t* output) {
-    // TODO: Implement pop operation
+    if (stack->top == NULL) {
+        return 0;
+    }
+    output = &stack->top->book;
+    stack_node_t* temp = stack->top;
+    stack->top = stack->top->next;
+    free(temp);
+    return 1;
 }
 
 /**
